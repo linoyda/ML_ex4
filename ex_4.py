@@ -8,11 +8,11 @@ from torch.utils.data import SubsetRandomSampler
 
 
 def main():
+    learning_list = [0.01, 0.001, 0.0005, 0.0009, 0.0015]
     test_predictions = []
     batch = 64
     valid_ratio = 0.2
     epoches = 10
-    learning_rate = 0.001
     """
     # option 1 - like ex3.
     train_x, train_y, test_x = sys.argv[1], sys.argv[2], sys.argv[3]
@@ -56,7 +56,8 @@ def main():
                                               batch_size=batch,
                                               shuffle=False)
 
-    modelA = FirstNetwork(image_size=28*28)
+    learning_rate = 0.01  # The best learning rate found for model A
+    modelA = FirstNetwork(image_size=28 * 28)
     optimizer = torch.optim.SGD(modelA.parameters(), lr=learning_rate)
 
     for i in range(epoches):
@@ -65,7 +66,8 @@ def main():
         validate(modelA, validation_loader)
     test_predictions = test(modelA, test_loader)
 
-    modelB = FirstNetwork(image_size=28*28)
+    learning_rate = 0.001   # The best learning rate for Model B
+    modelB = FirstNetwork(image_size=28 * 28)
     optimizer = torch.optim.Adam(modelB.parameters(), lr=learning_rate)
 
     for i in range(epoches):
@@ -75,7 +77,8 @@ def main():
     test_predictions = test(modelB, test_loader)
 
     # The third model is just like modelA, but we drop out some of the neurons.
-    modelC = FirstNetworkWithDropout(image_size=28*28)
+    learning_rate = 0.01  # The best learning rate for models C, D
+    modelC = FirstNetworkWithDropout(image_size=28 * 28)
     optimizer = torch.optim.SGD(modelC.parameters(), lr=learning_rate)
 
     for i in range(epoches):
@@ -85,7 +88,7 @@ def main():
     test_predictions = test(modelC, test_loader)
 
     # The fourth model is just like modelA, but we add Batch Normalization
-    modelD = FirstNetworkWithNormalization(image_size=28*28)
+    modelD = FirstNetworkWithNormalization(image_size=28 * 28)
     optimizer = torch.optim.SGD(modelD.parameters(), lr=learning_rate)
 
     for i in range(epoches):
@@ -93,8 +96,9 @@ def main():
         train(i, modelD, train_loader, learning_rate, optimizer)
         validate(modelD, validation_loader)
     test_predictions = test(modelD, test_loader)
-    
-    modelE = SecondNetwork(image_size=28*28)
+
+    learning_rate = 0.0009  # The best learning rate for model E
+    modelE = SecondNetwork(image_size=28 * 28)
     # Adam is the best optimizer...
     optimizer = torch.optim.Adam(modelE.parameters(), lr=learning_rate)
 
@@ -104,7 +108,8 @@ def main():
         validate(modelE, validation_loader)
     test_predictions = test(modelE, test_loader)
 
-    modelF = ThirdNetwork(image_size=28*28)
+    learning_rate = 0.0005  # The best learning rate for model F
+    modelF = ThirdNetwork(image_size=28 * 28)
     optimizer = torch.optim.Adam(modelF.parameters(), lr=learning_rate)
 
     for i in range(epoches):
@@ -112,7 +117,6 @@ def main():
         train(i, modelF, train_loader, learning_rate, optimizer)
         validate(modelF, validation_loader)
     test_predictions = test(modelF, test_loader)
-
     # todo choose the best model and print its output to test_y!
 
 
